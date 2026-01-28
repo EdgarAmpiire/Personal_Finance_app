@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "dashboard/show"
 
   root "sessions#new"
 
@@ -9,6 +10,8 @@ Rails.application.routes.draw do
   post "/sign_in", to: "sessions#create"
   delete "/sign_out", to: "sessions#destroy"
 
+  get "/dashboard", to: "dashboard#show"
+  
   # get "sessions/new"
   # get "sessions/create"
   # get "sessions/destroy"

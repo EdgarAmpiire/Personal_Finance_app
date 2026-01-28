@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   def new
-    redirect_to root_path, notice: "You're already signed in!" if signed_in?
+    redirect_to dashboard_path, notice: "You're already signed in!" if signed_in?
   end
 
   def create
@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
 
     if user&.authenticate(params[:password].to_s)
       session[:user_id] = user.id
-      redirect_to root_path, notice: "You're Signed in!"
+      redirect_to dashboard_path, notice: "You're Signed in!"
     else
       flash.now[:alert] = "Invalid email or password."
       render :new, status: :unprocessable_entity
