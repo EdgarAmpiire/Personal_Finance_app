@@ -1,6 +1,10 @@
 class User < ApplicationRecord
   has_secure_password
 
+  has_many :accounts, dependent: :destroy
+  has_many :transactions, dependent: :destroy
+  has_many :categories, dependent: :destroy
+
   before_validation :normalize_email
 
   validates :email, presence: true, uniqueness: { case_sensitive: false },

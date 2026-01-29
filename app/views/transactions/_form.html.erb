@@ -1,0 +1,44 @@
+<% @accounts ||= current_user.accounts.order(:name) %>
+<% @categories ||= current_user.categories.order(:name) %>
+
+<%= form_with model: @transaction, class: "space-y-4" do |f| %>
+  <div>
+    <%= f.label :occurred_on, class: "block text-sm font-medium mb-1" %>
+    <%= f.date_field :occurred_on, class: "w-full rounded border p-2" %>
+    <% @transaction.errors.full_messages_for(:occurred_on).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.label :description, class: "block text-sm font-medium mb-1" %>
+    <%= f.text_field :description, class: "w-full rounded border p-2" %>
+    <% @transaction.errors.full_messages_for(:description).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.label :account_id, "Account", class: "block text-sm font-medium mb-1" %>
+    <%= f.collection_select :account_id, @accounts, :id, :name, {}, class: "w-full rounded border p-2" %>
+    <% @transaction.errors.full_messages_for(:account).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.label :category_id, "Category (optional)", class: "block text-sm font-medium mb-1" %>
+    <%= f.collection_select :category_id, @categories, :id, :name, { include_blank: true }, class: "w-full rounded border p-2" %>
+  </div>
+
+  <div>
+    <%= f.label :amount, "Amount (use - for expenses)", class: "block text-sm font-medium mb-1" %>
+    <%= f.number_field :amount, step: "0.01", value: (@transaction.amount_cents ? (@transaction.amount_cents / 100.0) : nil),
+          class: "w-full rounded border p-2" %>
+    <% @transaction.errors.full_messages_for(:amount_cents).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <%= f.submit class: "rounded bg-black text-white px-4 py-2 cursor-pointer" %>
+<% end %>

@@ -1,10 +1,79 @@
-<div class="flex items-center justify-between">
+<div class="flex items-center justify-between mb-8">
   <h1 class="text-2xl font-semibold">Dashboard</h1>
 
-  <%= button_to "Sign out", sign_out_path, method: :delete,
-        class: "rounded bg-black text-white px-4 py-2" %>
+  <div class="flex items-center gap-3">
+    <%= link_to "Accounts", accounts_path, class: "rounded border px-4 py-2" %>
+    <%= link_to "Transactions", transactions_path, class: "rounded border px-4 py-2" %>
+    <%= button_to "Sign out", sign_out_path, method: :delete,
+          class: "rounded bg-black text-white px-4 py-2" %>
+  </div>
 </div>
 
-<p class="mt-6">
-  Signed in as <span class="font-medium"><%= current_user.email %></span>.
-</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+  <div class="rounded border p-4">
+    <div class="text-sm text-gray-600">Current Balance</div>
+    <div class="text-2xl font-semibold">
+      <%= number_to_currency(@current_balance_cents / 100.0) %>
+    </div>
+  </div>
+
+  <div class="rounded border p-4">
+    <div class="text-sm text-gray-600">Accounts</div>
+    <div class="text-2xl font-semibold"><%= @accounts.count %></div>
+  </div>
+
+  <div class="rounded border p-4">
+    <div class="text-sm text-gray-600">Recent Transactions</div>
+    <div class="text-2xl font-semibold"><%= @recent_transactions.count %></div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="rounded border p-4">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Accounts</h2>
+      <%= link_to "New account", new_account_path, class: "underline" %>
+    </div>
+
+    <% if @accounts.any? %>
+      <div class="space-y-3">
+        <% @accounts.each do |account| %>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-medium"><%= link_to account.name, account, class: "underline" %></div>
+              <div class="text-sm text-gray-600"><%= account.account_type %></div>
+            </div>
+            <div class="font-semibold"><%= number_to_currency(account.balance) %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-600">No accounts yet. Create one to get started.</p>
+    <% end %>
+  </div>
+
+  <div class="rounded border p-4">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Recent Transactions</h2>
+      <%= link_to "New transaction", new_transaction_path, class: "underline" %>
+    </div>
+
+    <% if @recent_transactions.any? %>
+      <div class="divide-y">
+        <% @recent_transactions.each do |t| %>
+          <div class="py-3 flex items-center justify-between">
+            <div>
+              <div class="font-medium"><%= link_to t.description, t, class: "underline" %></div>
+              <div class="text-sm text-gray-600">
+                <%= t.occurred_on %> • <%= t.account.name %><%= t.category ? " • #{t.category.name}" : "" %>
+              </div>
+            </div>
+            <div class="font-semibold"><%= number_to_currency(t.amount_cents / 100.0) %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-600">No transactions yet.</p>
+    <% end %>
+  </div>
+</div>

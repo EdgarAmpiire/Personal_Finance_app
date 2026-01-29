@@ -1,0 +1,19 @@
+<%= form_with model: @account, class: "space-y-4" do |f| %>
+  <div>
+    <%= f.label :name, class: "block text-sm font-medium mb-1" %>
+    <%= f.text_field :name, class: "w-full rounded border p-2" %>
+    <% @account.errors.full_messages_for(:name).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.label :account_type, class: "block text-sm font-medium mb-1" %>
+    <%= f.text_field :account_type, class: "w-full rounded border p-2" %>
+    <% @account.errors.full_messages_for(:account_type).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <%= f.submit class: "rounded bg-black text-white px-4 py-2 cursor-pointer" %>
+<% end %>
