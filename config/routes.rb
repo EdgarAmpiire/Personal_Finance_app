@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get "dashboard/show"
-
   root "sessions#new"
 
   get "/sign_up", to: "registrations#new"
@@ -11,7 +9,6 @@ Rails.application.routes.draw do
   delete "/sign_out", to: "sessions#destroy"
 
   get "/dashboard", to: "dashboard#show"
-  
   # get "sessions/new"
   # get "sessions/create"
   # get "sessions/destroy"
