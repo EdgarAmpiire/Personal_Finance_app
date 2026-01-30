@@ -16,6 +16,14 @@
     <% end %>
   </div>
 
+  <div>
+  <%= f.label :starting_balance_cents, "Starting Balance (UGX)", class: "block text-sm font-medium mb-1" %>
+  <%= f.number_field :starting_balance_cents, class: "w-full rounded border p-2" %>
+  <% @account.errors.full_messages_for(:starting_balance_cents).each do |msg| %>
+    <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+  <% end %>
+</div>
+
   <div class="flex gap-2">
     <%= f.submit class: "rounded bg-black text-white px-4 py-2 cursor-pointer" %>
     <%= link_to "Cancel", accounts_path, class: "rounded border px-4 py-2" %>

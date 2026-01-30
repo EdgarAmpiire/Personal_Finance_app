@@ -4,9 +4,10 @@ class Account < ApplicationRecord
 
   validates :name, presence: true
   validates :account_type, presence: true
+  validates :starting_balance_cents, numericality: { only_integer: true }, allow_nil: true
 
   def balance_cents
-    transactions.sum(:amount_cents)
+    (starting_balance_cents || 0) + transactions.sum(:amount_cents)
   end
 
   def balance

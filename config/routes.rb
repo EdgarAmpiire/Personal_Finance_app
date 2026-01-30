@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "recurring_bills/index"
+  get "pots/index"
+  get "budgets/index"
   get "categories/index"
   get "categories/new"
   get "categories/create"

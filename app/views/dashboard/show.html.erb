@@ -36,8 +36,7 @@
 
     <% if @spend_by_category.any? %>
       <div class="h-56">
-        <%= pie_chart @spend_by_category.transform_values { |c| c.to_i / 100.0 },
-            legend: true, height: "220px" %>
+        <%= pie_chart @spend_by_category, legend: true, height: "220px" %>
       </div>
     <% else %>
       <p class="text-sm text-gray-600">No expenses this month yet.</p>
