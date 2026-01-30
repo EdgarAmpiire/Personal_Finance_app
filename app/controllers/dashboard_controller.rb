@@ -38,5 +38,6 @@ class DashboardController < ApplicationController
       "Income" => (@month_income_cents.to_i / 100.0),
       "Expenses" => (@month_expense_cents.to_i / 100.0)
     }
+    
   end
 end

@@ -27,24 +27,31 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <!-- Budgets/Spending (chart) -->
+  <!-- Cashflow -->
   <div class="lg:col-span-1 rounded-xl bg-white border p-5">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Budgets</h2>
-      <%= link_to "See Details →", budgets_path, class: "text-sm text-gray-600 hover:underline" %>
+      <h2 class="text-lg font-semibold">Cashflow</h2>
     </div>
 
-    <% if @spend_by_category.any? %>
-      <div class="h-56">
-        <%= pie_chart @spend_by_category, legend: true, height: "220px" %>
-      </div>
-    <% else %>
-      <p class="text-sm text-gray-600">No expenses this month yet.</p>
-    <% end %>
+  <div class="h-56">
+      <%= pie_chart @income_vs_expense, height: "220px" %>
+  </div>
+    <p class="text-sm text-gray-600 mt-2">
+      Income vs Expenses for the current month.
+    </p>    
+  </div>
+
+  <!-- Budgets placeholder -->
+  <div class="lg:col-span-1 rounded-xl bg-white border p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Budget</h2>
+      <%= link_to "See Details →", budgets_path, class: "text-sm text-gray-600 hover:underline" %>
+    </div>
+    <p class="text-sm text-gray-600">Coming soon.</p>
   </div>
 
   <!-- Pots placeholder -->
-  <div class="lg:col-span-2 rounded-xl bg-white border p-5">
+  <div class="lg:col-span-1 rounded-xl bg-white border p-5">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold">Pots</h2>
       <%= link_to "See Details →", pots_path, class: "text-sm text-gray-600 hover:underline" %>

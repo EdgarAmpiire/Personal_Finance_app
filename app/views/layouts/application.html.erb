@@ -18,15 +18,16 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    
   </head>
 
 <body class="bg-gray-50">
   <% if signed_in? %>
     <div class="min-h-screen flex">
       <aside class="w-64 bg-slate-900 text-slate-100 p-5">
-        <div class="text-xl font-semibold mb-8">finance</div>
+        <div class="text-4xl font-semibold mb-8">Finance</div>
 
         <nav class="space-y-2">
           <%= nav_link "Overview", dashboard_path %>
