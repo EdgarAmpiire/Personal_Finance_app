@@ -29,7 +29,11 @@ Rails.application.routes.draw do
 
   resources :accounts
   resources :transactions
-  resources :categories, only: %i[index new create]
+  resources :categories, only: %i[ index new create ]
+  resources :budgets, only: [ :index ]
+  resources :pots, only: [ :index ]
+  resources :recurring_bills, only: [ :index ]
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check

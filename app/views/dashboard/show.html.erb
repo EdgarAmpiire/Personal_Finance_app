@@ -1,61 +1,63 @@
-<div class="flex items-center justify-between mb-8">
-  <h1 class="text-2xl font-semibold">Dashboard</h1>
-
-  <div class="flex items-center gap-3">
-    <%= link_to "Accounts", accounts_path, class: "rounded border px-4 py-2" %>
-    <%= link_to "Transactions", transactions_path, class: "rounded border px-4 py-2" %>
-    <%= button_to "Sign out", sign_out_path, method: :delete,
-          class: "rounded bg-black text-white px-4 py-2" %>
-  </div>
+<div class="mb-6">
+  <h1 class="text-3xl font-semibold">Overview</h1>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-  <div class="rounded border p-4">
-    <div class="text-sm text-gray-600">Current Balance</div>
-    <div class="text-2xl font-semibold">
-      <%= number_to_currency(@current_balance_cents / 100.0) %>
+<!-- Top cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="rounded-xl bg-slate-900 text-white p-5">
+    <div class="text-sm text-slate-300">Current Balance</div>
+    <div class="text-3xl font-semibold mt-2">
+      <%= number_to_currency(@current_balance_cents.to_i / 100.0) %>
     </div>
   </div>
 
-  <div class="rounded border p-4">
-    <div class="text-sm text-gray-600">Accounts</div>
-    <div class="text-2xl font-semibold"><%= @accounts.count %></div>
+  <div class="rounded-xl bg-white border p-5">
+    <div class="text-sm text-gray-500">Income (this month)</div>
+    <div class="text-3xl font-semibold mt-2">
+      <%= number_to_currency(@month_income_cents.to_i / 100.0) %>
+    </div>
   </div>
 
-  <div class="rounded border p-4">
-    <div class="text-sm text-gray-600">Recent Transactions</div>
-    <div class="text-2xl font-semibold"><%= @recent_transactions.count %></div>
+  <div class="rounded-xl bg-white border p-5">
+    <div class="text-sm text-gray-500">Expenses (this month)</div>
+    <div class="text-3xl font-semibold mt-2">
+      <%= number_to_currency(@month_expense_cents.to_i / 100.0) %>
+    </div>
   </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <div class="rounded border p-4">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Budgets/Spending (chart) -->
+  <div class="lg:col-span-1 rounded-xl bg-white border p-5">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Accounts</h2>
-      <%= link_to "New account", new_account_path, class: "underline" %>
+      <h2 class="text-lg font-semibold">Budgets</h2>
+      <%= link_to "See Details →", budgets_path, class: "text-sm text-gray-600 hover:underline" %>
     </div>
 
-    <% if @accounts.any? %>
-      <div class="space-y-3">
-        <% @accounts.each do |account| %>
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="font-medium"><%= link_to account.name, account, class: "underline" %></div>
-              <div class="text-sm text-gray-600"><%= account.account_type %></div>
-            </div>
-            <div class="font-semibold"><%= number_to_currency(account.balance) %></div>
-          </div>
-        <% end %>
+    <% if @spend_by_category.any? %>
+      <div class="h-56">
+        <%= pie_chart @spend_by_category.transform_values { |c| c.to_i / 100.0 },
+            legend: true, height: "220px" %>
       </div>
     <% else %>
-      <p class="text-sm text-gray-600">No accounts yet. Create one to get started.</p>
+      <p class="text-sm text-gray-600">No expenses this month yet.</p>
     <% end %>
   </div>
 
-  <div class="rounded border p-4">
+  <!-- Pots placeholder -->
+  <div class="lg:col-span-2 rounded-xl bg-white border p-5">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Recent Transactions</h2>
-      <%= link_to "New transaction", new_transaction_path, class: "underline" %>
+      <h2 class="text-lg font-semibold">Pots</h2>
+      <%= link_to "See Details →", pots_path, class: "text-sm text-gray-600 hover:underline" %>
+    </div>
+    <p class="text-sm text-gray-600">Coming soon.</p>
+  </div>
+
+  <!-- Transactions list -->
+  <div class="lg:col-span-2 rounded-xl bg-white border p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Transactions</h2>
+      <%= link_to "View All →", transactions_path, class: "text-sm text-gray-600 hover:underline" %>
     </div>
 
     <% if @recent_transactions.any? %>
@@ -63,17 +65,30 @@
         <% @recent_transactions.each do |t| %>
           <div class="py-3 flex items-center justify-between">
             <div>
-              <div class="font-medium"><%= link_to t.description, t, class: "underline" %></div>
-              <div class="text-sm text-gray-600">
+              <div class="font-medium">
+                <%= link_to t.description, t, class: "hover:underline" %>
+              </div>
+              <div class="text-sm text-gray-500">
                 <%= t.occurred_on %> • <%= t.account.name %><%= t.category ? " • #{t.category.name}" : "" %>
               </div>
             </div>
-            <div class="font-semibold"><%= number_to_currency(t.amount_cents / 100.0) %></div>
+            <div class="font-semibold">
+              <%= number_to_currency(t.amount_cents / 100.0) %>
+            </div>
           </div>
         <% end %>
       </div>
     <% else %>
       <p class="text-sm text-gray-600">No transactions yet.</p>
     <% end %>
+  </div>
+
+  <!-- Recurring bills placeholder -->
+  <div class="rounded-xl bg-white border p-5">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold">Recurring Bills</h2>
+      <%= link_to "See Details →", recurring_bills_path, class: "text-sm text-gray-600 hover:underline" %>
+    </div>
+    <p class="text-sm text-gray-600">Coming soon.</p>
   </div>
 </div>

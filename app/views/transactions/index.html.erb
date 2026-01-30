@@ -3,6 +3,34 @@
   <%= link_to "New transaction", new_transaction_path, class: "rounded bg-black text-white px-4 py-2" %>
 </div>
 
+<div class="rounded border bg-white p-4 mb-6">
+  <%= form_with url: transactions_path, method: :get, class: "grid grid-cols-1 md:grid-cols-4 gap-4" do %>
+    <div>
+      <label class="block text-sm font-medium mb-1">Category</label>
+      <%= select_tag :category_id,
+          options_from_collection_for_select(@categories, :id, :name, params[:category_id]),
+          include_blank: "All",
+          class: "w-full rounded border p-2" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">From</label>
+      <%= date_field_tag :from, params[:from], class: "w-full rounded border p-2" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">To</label>
+      <%= date_field_tag :to, params[:to], class: "w-full rounded border p-2" %>
+    </div>
+
+    <div class="flex items-end gap-2">
+      <%= submit_tag "Filter", class: "rounded bg-black text-white px-4 py-2 cursor-pointer" %>
+      <%= link_to "Reset", transactions_path, class: "rounded border px-4 py-2" %>
+    </div>
+  <% end %>
+</div>
+
+
 <div class="overflow-x-auto rounded border">
   <table class="min-w-full text-sm">
     <thead class="bg-gray-50">

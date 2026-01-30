@@ -1,4 +1,47 @@
 <div>
-  <h1 class="font-bold text-4xl">Accounts#show</h1>
-  <p>Find me in app/views/accounts/show.html.erb</p>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold"><%= @account.name %></h1>
+    <p class="text-gray-600"><%= @account.account_type %></p>
+  </div>
+
+  <div class="text-right">
+    <div class="text-sm text-gray-600">Balance</div>
+    <div class="text-2xl font-semibold"><%= number_to_currency(@account.balance) %></div>
+  </div>
+</div>
+
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold">Recent Transactions</h2>
+  <%= link_to "New transaction", new_transaction_path, class: "rounded bg-black text-white px-4 py-2" %>
+</div>
+
+<% if @transactions.any? %>
+  <div class="rounded-xl border bg-white overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="text-left p-3">Date</th>
+          <th class="text-left p-3">Description</th>
+          <th class="text-left p-3">Category</th>
+          <th class="text-right p-3">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @transactions.each do |t| %>
+          <tr class="border-t">
+            <td class="p-3"><%= t.occurred_on %></td>
+            <td class="p-3"><%= link_to t.description, t, class: "hover:underline" %></td>
+            <td class="p-3"><%= t.category&.name || "-" %></td>
+            <td class="p-3 text-right"><%= number_to_currency(t.amount_cents / 100.0) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="rounded-xl border bg-white p-6">
+    <p class="text-gray-600">No transactions yet for this account.</p>
+  </div>
+<% end %>
 </div>
