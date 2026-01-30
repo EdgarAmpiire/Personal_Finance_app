@@ -59,7 +59,8 @@
 </div>
 
   <% else %>
-    <div class="max-w-2xl mx-auto p-4">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 p-1">
+    <div class="w-full max-w-2xl">
       <% if notice %>
         <div data-controller="flash" class="mb-4 rounded bg-green-50 p-3 text-green-800"><%= notice %></div>
       <% end %>
@@ -67,9 +68,13 @@
         <div data-controller="flash" class="mb-4 rounded bg-red-50 p-3 text-red-800"><%= alert %></div>
       <% end %>
 
-      <%= yield %>
+      <div class="rounded-xl border bg-white p-6 shadow-sm">
+        <%= yield %>
+      </div>
     </div>
-  <% end %>
+  </div>
+<% end %>
+
 </body>
 
 </html>
