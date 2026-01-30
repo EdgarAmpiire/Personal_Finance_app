@@ -25,38 +25,39 @@
 
 <body class="bg-gray-50">
   <% if signed_in? %>
-    <div class="min-h-screen flex">
-      <aside class="w-64 bg-slate-900 text-slate-100 p-5">
-        <div class="text-4xl font-semibold mb-8">Finance</div>
+    <div class="h-screen flex overflow-hidden">
+    <aside class="w-64 bg-slate-900 text-slate-100 p-5 flex flex-col flex-none">
+    <div class="text-4xl font-semibold mb-8">Finance</div>
 
-        <nav class="space-y-2">
-          <%= nav_link "Overview", dashboard_path %>
-          <%= nav_link "Accounts", accounts_path %>
-          <%= nav_link "Transactions", transactions_path %>
-          <%= nav_link "Budgets", budgets_path %>
-          <%= nav_link "Pots", pots_path %>
-          <%= nav_link "Recurring Bills", recurring_bills_path %>
+    <nav class="space-y-2 overflow-hidden">
+      <%= nav_link "Overview", dashboard_path %>
+      <%= nav_link "Accounts", accounts_path %>
+      <%= nav_link "Transactions", transactions_path %>
+      <%= nav_link "Budgets", budgets_path %>
+      <%= nav_link "Pots", pots_path %>
+      <%= nav_link "Recurring Bills", recurring_bills_path %>
+    </nav>
 
-          <div class="pt-6 border-t border-slate-800 mt-6">
-            <%= button_to "Sign out", sign_out_path, method: :delete,
-                  class: "w-full rounded bg-slate-800 px-3 py-2 text-left text-sm hover:bg-slate-700" %>
-          </div>
-        </nav>
-      </aside>
-
-      <main class="flex-1 p-6">
-        <div class="max-w-6xl mx-auto">
-          <% if notice %>
-            <div data-controller="flash" class="mb-4 rounded bg-green-50 p-3 text-green-800"><%= notice %></div>
-          <% end %>
-          <% if alert %>
-            <div data-controller="flash" class="mb-4 rounded bg-red-50 p-3 text-red-800"><%= alert %></div>
-          <% end %>
-
-          <%= yield %>
-        </div>
-      </main>
+    <div class="mt-auto pt-6 border-t border-slate-800">
+      <%= button_to "Sign out", sign_out_path, method: :delete,
+            class: "w-full rounded bg-slate-800 px-3 py-2 text-left text-sm hover:bg-slate-700" %>
     </div>
+    </aside>
+
+  <main class="flex-1 overflow-y-auto p-6">
+    <div class="max-w-6xl mx-auto">
+      <% if notice %>
+        <div data-controller="flash" class="mb-4 rounded bg-green-50 p-3 text-green-800"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div data-controller="flash" class="mb-4 rounded bg-red-50 p-3 text-red-800"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </div>
+  </main>
+</div>
+
   <% else %>
     <div class="max-w-2xl mx-auto p-4">
       <% if notice %>
