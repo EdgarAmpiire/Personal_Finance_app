@@ -36,7 +36,9 @@ class AccountsController < ApplicationController
 
   def destroy
     @account.destroy
-    redirect_to account_path, notice: "Your account has been deleted."
+    redirect_to accounts_path, status: :see_other, notice: "Your account has been deleted."
+  #    @account.destroy
+  # redirect_to accounts_path, status: :see_other, notice: "Account deleted."
   end
 
   private
@@ -46,6 +48,6 @@ class AccountsController < ApplicationController
   end
 
   def account_params
-    params.require(:account).permit(:name, :account_type, :starting_balance_cents)
+  params.require(:account).permit(:name, :account_type, :starting_balance)
   end
 end

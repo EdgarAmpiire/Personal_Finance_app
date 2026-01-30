@@ -32,7 +32,7 @@
   </div>
 
   <div>
-    <%= f.label :amount, "Amount (use - for expenses)", class: "block text-sm font-medium mb-1" %>
+    <%= f.label :amount, "Amount (use '-' for expenses)", class: "block text-sm font-medium mb-1" %>
     <%= f.number_field :amount, step: "0.01", value: (@transaction.amount_cents ? (@transaction.amount_cents / 100.0) : nil),
           class: "w-full rounded border p-2" %>
     <% @transaction.errors.full_messages_for(:amount_cents).each do |msg| %>

@@ -28,4 +28,11 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  number:
+    currency:
+      format:
+        unit: "UGX "
+        delimiter: ","
+        separator: "."
+        format: "%u%n"
+        precision: 2

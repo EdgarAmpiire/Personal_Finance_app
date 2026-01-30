@@ -17,11 +17,8 @@
   </div>
 
   <div>
-  <%= f.label :starting_balance_cents, "Starting Balance (UGX)", class: "block text-sm font-medium mb-1" %>
-  <%= f.number_field :starting_balance_cents, class: "w-full rounded border p-2" %>
-  <% @account.errors.full_messages_for(:starting_balance_cents).each do |msg| %>
-    <p class="text-sm text-red-600 mt-1"><%= msg %></p>
-  <% end %>
+  <%= f.label :starting_balance, "Starting Balance (UGX)", class: "block text-sm font-medium mb-1" %>
+  <%= f.text_field :starting_balance, class: "w-full rounded border p-2", placeholder: "1000000" %>
 </div>
 
   <div class="flex gap-2">
