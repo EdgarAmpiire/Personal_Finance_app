@@ -33,12 +33,15 @@ class TransactionsController < ApplicationController
   def create
     @transaction = current_user.transactions.new(transaction_params)
 
-    # Enforce ownership of foreign keys (this is what Brakeman wants in spirit)
-    @transaction.account  = current_user.accounts.find(params[:transaction][:account_id])
-    @transaction.category = current_user.categories.find(params[:transaction][:category_id])
+    assign_account_and_category
+
+    if @transaction.errors.any?
+      load_form_collections
+      return render :new, status: :unprocessable_entity
+    end
 
     if @transaction.save
-      redirect_to @transaction, notice: "New transaction created."
+      redirect_to @transaction, notice: "Your transaction has been created."
     else
       load_form_collections
       render :new, status: :unprocessable_entity
@@ -50,17 +53,16 @@ class TransactionsController < ApplicationController
   end
 
   def update
-    # Update base fields + amount_cents
-    if @transaction.update(transaction_params)
-      # If user is trying to change account/category, enforce ownership
-      if params[:transaction][:account_id].present?
-        @transaction.update!(account: current_user.accounts.find(params[:transaction][:account_id]))
-      end
+    @transaction.assign_attributes(transaction_params)
 
-      if params[:transaction][:category_id].present?
-        @transaction.update!(category: current_user.categories.find(params[:transaction][:category_id]))
-      end
+    assign_account_and_category
 
+    if @transaction.errors.any?
+      load_form_collections
+      return render :edit, status: :unprocessable_entity
+    end
+
+    if @transaction.save
       redirect_to @transaction, notice: "Your transaction has been updated."
     else
       load_form_collections
@@ -83,6 +85,32 @@ class TransactionsController < ApplicationController
     @accounts = current_user.accounts.order(:name)
     @categories = current_user.categories.order(:name)
   end
+
+  def assign_account_and_category
+    account_id  = params.dig(:transaction, :account_id)
+    category_id = params.dig(:transaction, :category_id)
+
+    # Account is required
+    account = current_user.accounts.find_by(id: account_id)
+    if account.nil?
+      @transaction.errors.add(:account, "is invalid")
+    else
+      @transaction.account = account
+    end
+
+    # Category is optional
+    if category_id.present?
+      category = current_user.categories.find_by(id: category_id)
+      if category.nil?
+        @transaction.errors.add(:category, "is invalid")
+      else
+        @transaction.category = category
+      end
+    else
+      @transaction.category = nil
+    end
+  end
+
 
   def transaction_params
     raw = params.require(:transaction).permit(:description, :occurred_on, :amount)
