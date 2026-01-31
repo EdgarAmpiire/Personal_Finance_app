@@ -43,14 +43,19 @@ class TransactionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update transaction" do
-    patch transaction_url(@transaction), params: {
+    transaction = transactions(:one)
+
+    patch transaction_url(transaction), params: {
       transaction: {
-        description: "Updated description"
-        # amount omitted on purpose to prove your controller no longer crashes
+        description: "Updated description",
+        occurred_on: Date.current,
+        amount: "12.50",
+        account_id: accounts(:one).id,
+        category_id: categories(:one).id
       }
     }
 
-    assert_redirected_to transaction_url(@transaction)
+    assert_redirected_to transaction_url(transaction)
   end
 
   test "should destroy transaction" do
