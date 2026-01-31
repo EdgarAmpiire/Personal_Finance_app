@@ -1,38 +1,60 @@
 require "test_helper"
 
 class AccountsControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get accounts_index_url
-    assert_response :success
+  setup do
+    sign_in_as(users(:one))
+    @account = accounts(:one)
   end
 
-  test "should get show" do
-    get accounts_show_url
+  test "should get index" do
+    get accounts_url
     assert_response :success
   end
 
   test "should get new" do
-    get accounts_new_url
+    get new_account_url
     assert_response :success
   end
 
-  test "should get create" do
-    get accounts_create_url
+  test "should create account" do
+    assert_difference("Account.count", 1) do
+      post accounts_url, params: {
+        account: {
+          name: "Savings",
+          account_type: "Cash"
+        }
+      }
+    end
+
+    assert_redirected_to account_url(Account.last)
+  end
+
+  test "should show account" do
+    get account_url(@account)
     assert_response :success
   end
 
   test "should get edit" do
-    get accounts_edit_url
+    get edit_account_url(@account)
     assert_response :success
   end
 
-  test "should get update" do
-    get accounts_update_url
-    assert_response :success
+  test "should update account" do
+    patch account_url(@account), params: {
+      account: {
+        name: "Updated name",
+        account_type: "Bank"
+      }
+    }
+
+    assert_redirected_to account_url(@account)
   end
 
-  test "should get destroy" do
-    get accounts_destroy_url
-    assert_response :success
+  test "should destroy account" do
+    assert_difference("Account.count", -1) do
+      delete account_url(@account)
+    end
+
+    assert_redirected_to accounts_url
   end
 end
