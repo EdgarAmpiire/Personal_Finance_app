@@ -10,9 +10,17 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false },
                     format: { with: URI::MailTo::EMAIL_REGEXP }
 
+  after_create :create_default_categories
+
   private
 
   def normalize_email
     self.email = email.to_s.strip.downcase
+  end
+
+  def create_default_categories
+    Category::DEFAULT_NAMES.each do |name|
+      categories.create!(name: name)
+    end
   end
 end
