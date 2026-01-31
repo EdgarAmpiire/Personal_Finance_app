@@ -16,7 +16,7 @@ class Category < ApplicationRecord
     "Fees/Charges",
     "Other"
   ].freeze
-  
+
   belongs_to :user
   has_many :transactions, dependent: :nullify
 
