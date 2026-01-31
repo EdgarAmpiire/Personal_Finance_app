@@ -32,6 +32,11 @@ class TransactionsController < ApplicationController
 
   def create
     @transaction = current_user.transactions.new(transaction_params)
+
+    # Enforce ownership of foreign keys (this is what Brakeman wants in spirit)
+    @transaction.account  = current_user.accounts.find(params[:transaction][:account_id])
+    @transaction.category = current_user.categories.find(params[:transaction][:category_id])
+
     if @transaction.save
       redirect_to @transaction, notice: "New transaction created."
     else
@@ -45,7 +50,17 @@ class TransactionsController < ApplicationController
   end
 
   def update
+    # Update base fields + amount_cents
     if @transaction.update(transaction_params)
+      # If user is trying to change account/category, enforce ownership
+      if params[:transaction][:account_id].present?
+        @transaction.update!(account: current_user.accounts.find(params[:transaction][:account_id]))
+      end
+
+      if params[:transaction][:category_id].present?
+        @transaction.update!(category: current_user.categories.find(params[:transaction][:category_id]))
+      end
+
       redirect_to @transaction, notice: "Your transaction has been updated."
     else
       load_form_collections
@@ -69,25 +84,12 @@ class TransactionsController < ApplicationController
     @categories = current_user.categories.order(:name)
   end
 
-  # def transaction_params
-  #   raw = params.require(:transaction).permit(:account_id, :category_id, :description, :occurred_on, :amount)
-
-  #   # Convert amount -> amount_cents int
-  #   cents = (BigDecimal(raw.delete(:amount).to_s) * 100).to_i
-
-  #   raw.merge(amount_cents: cents)
-  # end
   def transaction_params
-  raw = params.require(:transaction).permit(:account_id, :category_id, :description, :occurred_on, :amount)
+    raw = params.require(:transaction).permit(:description, :occurred_on, :amount)
 
-  amount_str = raw.delete(:amount)
+    amount_str = raw.delete(:amount).to_s.strip
+    raw[:amount_cents] = (BigDecimal(amount_str) * 100).to_i if amount_str.present?
 
-  # Only convert if amount was provided (create needs it, update might not)
-  if amount_str.present?
-    cents = (BigDecimal(amount_str.to_s) * 100).to_i
-    raw[:amount_cents] = cents
-  end
-
-  raw
+    raw
   end
 end
