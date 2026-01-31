@@ -3,25 +3,24 @@ class TransactionsController < ApplicationController
   before_action :set_transaction, only: %i[show edit update destroy]
 
   def index
-  scope = current_user.transactions.includes(:account, :category)
+    scope = current_user.transactions.includes(:account, :category)
 
-  if params[:category_id].present?
-    scope = scope.where(category_id: params[:category_id])
+    if params[:category_id].present?
+      scope = scope.where(category_id: params[:category_id])
+    end
+
+    if params[:from].present?
+      scope = scope.where("occurred_on >= ?", Date.parse(params[:from]))
+    end
+
+    if params[:to].present?
+      scope = scope.where("occurred_on <= ?", Date.parse(params[:to]))
+    end
+
+    @transactions = scope.order(occurred_on: :desc, created_at: :desc).limit(200)
+
+    @categories = current_user.categories.order(:name)
   end
-
-  if params[:from].present?
-    scope = scope.where("occurred_on >= ?", Date.parse(params[:from]))
-  end
-
-  if params[:to].present?
-    scope = scope.where("occurred_on <= ?", Date.parse(params[:to]))
-  end
-
-  @transactions = scope.order(occurred_on: :desc, created_at: :desc).limit(200)
-
-  @categories = current_user.categories.order(:name)
-end
-
 
   def show
   end
@@ -91,5 +90,4 @@ end
 
   raw
   end
-
 end
