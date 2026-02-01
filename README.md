@@ -1,58 +1,118 @@
-<<<<<<< HEAD
-# README
+# Personal Finance App
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A simple personal finance tracker built with Ruby on Rails.  
+It supports user authentication, accounts, transactions, and categories, with a dashboard to view your data.
 
-Things you may want to cover:
+---
 
-* Ruby version
+## Features
 
-* System dependencies
+- **Authentication**
+  - Sign up / Sign in / Sign out
+  - Sessions-based login
 
-* Configuration
+- **Accounts**
+  - Create and manage multiple accounts (e.g. Cash, Bank, Mobile Money)
+  - Account ownership enforced per user
 
-* Database creation
+- **Transactions**
+  - Create, edit, delete transactions
+  - Transactions belong to an account and a category which is optional
+  - Amount stored as `amount_cents` (integer) for accuracy
 
-* Database initialization
+- **Categories**
+  - Create categories for classifying transactions (other)
+  - Suggested defaults
 
-* How to run the test suite
+- **Dashboard**
+  - Summary view of your finances (accounts + transactions)
 
-* Services (job queues, cache servers, search engines, etc.)
+- **Quality / Security**
+  - Tests with Minitest
+  - Brakeman security scanning
+  - RuboCop style checks
 
-* Deployment instructions
+---
 
-* ...
-=======
-# Take‑Home: Personal Finance App (1 week)
+## Tech Stack
 
-**Goal:** Implement a usable MVP that meets the brief and ships to a live demo.
+- **Ruby on Rails** (Rails 8)
+- **PostgreSQL**
+- **TailwindCSS**
+- **Minitest**
+- **Brakeman**
+- **RuboCop**
 
-## Scope & Requirements
+---
 
-- Users can: sign up/sign in; add/edit/delete accounts; record transactions; view balances; filter by category/date; basic charts.
-- Tech: Rails 7/8; Postgres; any front‑end (ERB/Hotwire or React). Tests required.
-- Deliverable: MR using `Project_Submission` template; deploy URL.
+## Requirements
 
-## Acceptance Criteria (excerpt)
+- Ruby (use whatever version your project is configured for)
+- Bundler
+- PostgreSQL running locally
 
-- [ ] Auth + session security (CSRF, password rules)
-- [ ] CRUD for accounts & transactions
-- [ ] Category budgets + monthly summary
-- [ ] Accessible UI; mobile responsive
-- [ ] Seed data + README with setup/run/test
+---
 
-# Using the Figma design file
+## Setup
 
-Using this design file will help you practice building projects in the same way professionals do. Seeing the details in the design will help you improve your accuracy and build projects faster.
+### 1) Clone and install gems
 
-[Figma](https://www.figma.com/) is an extremely popular design tool with a generous free tier and support for both Windows and Mac computers.
+```bash
+git clone <your-repo-url>
+cd personal_finance_app
+bundle install
+```
 
-To get started with Figma, [download the correct app for your operating system](https://www.figma.com/downloads/). You can then open the app and open the `.fig` design file by dragging it over the app or using the "import" button.
+### 2) Configure database
 
-If you're going to use the Desktop App, you don't need to download the Font Installer from the downloads page. But if you're planning on using the Figma web app you should download and install it to ensure the fonts show up correctly.
+- Make sure Postgres is running
 
-If you haven't used Figma before, we recommend reading our "[Figma for developers: How to work with a design file](https://www.frontendmentor.io/articles/figma-for-developers-how-to-work-with-a-design-file-m6CZKZ1rC1)" article.
+```bash
+pg-isready
+```
 
-We hope you enjoy the challenge! 🙂
->>>>>>> cc08916adeba7ff6612f3b02623d1028900e2973
+- If postgres is not running, start it
+```bash
+brew services start postgresql@16
+pg_isready
+```
+### 3) Create and migrate database
+
+```bash
+bin/rails db:create db:migrate
+```
+
+### 4) Start the app
+
+```bash
+bin/dev
+```
+- App runs on:
+    http://localhost:3000
+
+
+## Linting & Security Checks
+
+### Rubocop
+
+```bash
+bin/rubocop
+```
+
+## Brakeman
+```bash
+bin/brakeman --no-pager
+```
+
+## Notes
+- Transactions store the amount as integer cents (amount_cents) to avoid floating-point issues.
+
+- Ownership checks ensure users can only access their own records (accounts, transactions, categories).
+
+- If you get a database connection error, confirm Postgres is running:
+```bash
+pg_isready
+```
+
+## Credits
+Built by **Edgar Ampiire** 
