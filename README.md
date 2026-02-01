@@ -58,7 +58,7 @@ It supports user authentication, accounts, transactions, and categories, with a 
 ### 1) Clone and install gems
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/EdgarAmpiire/Personal_Finance_app.git
 cd personal_finance_app
 bundle install
 ```
