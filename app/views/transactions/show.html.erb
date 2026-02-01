@@ -1,16 +1,46 @@
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold"><%= @transaction.description %></h1>
-  <div class="flex gap-2">
-    <%= link_to "Edit", edit_transaction_path(@transaction), class: "rounded border px-4 py-2" %>
+<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-6">
+  <div class="min-w-0">
+    <h1 class="text-xl sm:text-2xl font-semibold break-words">
+      <%= @transaction.description %>
+    </h1>
+    <p class="text-sm text-gray-500 mt-1">
+      <%= @transaction.occurred_on %> • <%= @transaction.account.name %>
+      <%= @transaction.category ? " • #{@transaction.category.name}" : "" %>
+    </p>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-2 sm:shrink-0">
+    <%= link_to "Edit", edit_transaction_path(@transaction),
+          class: "w-full sm:w-auto text-center rounded border px-4 py-2" %>
+
     <%= button_to "Delete", @transaction, method: :delete,
-          class: "rounded bg-red-600 text-white px-4 py-2",
+          class: "w-full sm:w-auto rounded bg-red-600 text-white px-4 py-2",
           data: { turbo_confirm: "Delete this transaction?" } %>
   </div>
 </div>
 
-<div class="space-y-2">
-  <div><span class="text-gray-600">Date:</span> <%= @transaction.occurred_on %></div>
-  <div><span class="text-gray-600">Account:</span> <%= @transaction.account.name %></div>
-  <div><span class="text-gray-600">Category:</span> <%= @transaction.category&.name || "-" %></div>
-  <div><span class="text-gray-600">Amount:</span> <%= number_to_currency(@transaction.amount_cents / 100.0) %></div>
+<div class="rounded-xl border bg-white p-4 sm:p-6">
+  <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Date</dt>
+      <dd class="mt-1 font-medium text-gray-900"><%= @transaction.occurred_on %></dd>
+    </div>
+
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Amount</dt>
+      <dd class="mt-1 font-semibold text-gray-900">
+        <%= number_to_currency(@transaction.amount_cents / 100.0) %>
+      </dd>
+    </div>
+
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Account</dt>
+      <dd class="mt-1 font-medium text-gray-900"><%= @transaction.account.name %></dd>
+    </div>
+
+    <div>
+      <dt class="text-xs uppercase tracking-wide text-gray-500">Category</dt>
+      <dd class="mt-1 font-medium text-gray-900"><%= @transaction.category&.name || "-" %></dd>
+    </div>
+  </dl>
 </div>
