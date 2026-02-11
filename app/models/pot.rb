@@ -6,15 +6,23 @@ class Pot < ApplicationRecord
   validates :saved_cents, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   def target
-    target_cents / 100.0
+    target_cents.to_i / 100.0
   end
 
   def saved
-    saved_cents / 100.0
+    saved_cents.to_i / 100.0
+  end
+
+  def target=(value)
+    self.target_cents = money_to_cents(value)
+  end
+
+  def saved=(value)
+    self.saved_cents = money_to_cents(value)
   end
 
   def progress_ratio
-    return 0.0 if target_cents <= 0
+    return 0.0 if target_cents.to_i <= 0
     [ saved_cents.to_f / target_cents, 1.0 ].min
   end
 
@@ -31,5 +39,13 @@ class Pot < ApplicationRecord
     raise ArgumentError, "amount must be positive" if amount_cents.to_i <= 0
     raise ArgumentError, "insufficient funds" if amount_cents.to_i > saved_cents
     update!(saved_cents: saved_cents - amount_cents.to_i)
+  end
+
+  private
+
+  def money_to_cents(value)
+    cleaned = value.to_s.delete(",").strip
+    return 0 if cleaned.blank?
+    [ (BigDecimal(cleaned) * 100).to_i, 0 ].max
   end
 end

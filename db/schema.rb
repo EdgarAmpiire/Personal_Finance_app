@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_30_094753) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_11_113634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,6 +30,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_094753) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_categories_on_user_id"
+  end
+
+  create_table "pots", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name"
+    t.string "color", default: "#14b8a6", null: false
+    t.bigint "target_cents", default: 0, null: false
+    t.bigint "saved_cents", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pots_on_user_id"
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -56,6 +67,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_094753) do
 
   add_foreign_key "accounts", "users"
   add_foreign_key "categories", "users"
+  add_foreign_key "pots", "users"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "users"
