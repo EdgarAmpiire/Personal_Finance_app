@@ -23,3 +23,4 @@ class Account < ApplicationRecord
     balance_cents / 100.0
   end
 end
+ 

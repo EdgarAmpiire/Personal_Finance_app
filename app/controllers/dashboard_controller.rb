@@ -2,7 +2,6 @@ class DashboardController < ApplicationController
   before_action :require_login
 
   def show
-    # @accounts = current_user.accounts.order(:name)
     @accounts = current_user.accounts.order(:name)
     @recent_transactions = current_user.transactions
                                        .includes(:account, :category)

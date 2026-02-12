@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_30_094753) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_12_072207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,12 +24,33 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_094753) do
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
+  create_table "budgets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.integer "limit_cents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_budgets_on_category_id"
+    t.index ["user_id"], name: "index_budgets_on_user_id"
+  end
+
   create_table "categories", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_categories_on_user_id"
+  end
+
+  create_table "pots", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name"
+    t.string "color", default: "#14b8a6", null: false
+    t.bigint "target_cents", default: 0, null: false
+    t.bigint "saved_cents", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_pots_on_user_id"
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -55,7 +76,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_30_094753) do
   end
 
   add_foreign_key "accounts", "users"
+  add_foreign_key "budgets", "categories"
+  add_foreign_key "budgets", "users"
   add_foreign_key "categories", "users"
+  add_foreign_key "pots", "users"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "users"

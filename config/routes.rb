@@ -13,8 +13,13 @@ Rails.application.routes.draw do
   resources :accounts
   resources :transactions
   resources :categories, only: %i[ index new create ]
-  resources :budgets, only: [ :index ]
-  resources :pots, only: [ :index ]
+  resources :budgets
+  resources :pots do
+    member do
+      post :add_money
+      post :withdraw_money
+    end
+  end
   resources :recurring_bills, only: [ :index ]
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

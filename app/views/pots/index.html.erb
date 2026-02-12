@@ -1,4 +1,121 @@
-<div>
-  <h1 class="text-2xl font-semibold">Pots</h1>
-<p class="mt-2 text-gray-600">Coming soon.</p>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <h1 class="text-3xl font-semibold">Pots</h1>
+
+  <%= link_to "+ Add New Pot", new_pot_path,
+        class: "inline-flex justify-center rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800" %>
 </div>
+
+<% if @pots.any? %>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <% @pots.each do |pot| %>
+      <div class="rounded-2xl border bg-white p-6 shadow-sm">
+        <!-- Header row -->
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0 flex items-start gap-3">
+            <!-- Colored dot -->
+            <span class="mt-1 inline-flex h-3 w-3 rounded-full bg-emerald-700"></span>
+
+            <div class="min-w-0">
+              <div class="text-lg font-semibold truncate">
+                <%= link_to pot.name, pot_path(pot), class: "hover:underline" %>
+              </div>
+
+              <div class="mt-4 text-sm text-slate-500">
+                Total Saved
+              </div>
+            </div>
+          </div>
+
+          <!-- Right side: kebab menu + saved amount -->
+          <div class="shrink-0 text-right">
+            <div class="flex items-start justify-end">
+              <!-- Kebab dropdown -->
+              <details class="relative">
+                <summary class="list-none cursor-pointer select-none rounded-md px-2 py-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+                  •••
+                </summary>
+
+                <div class="absolute flex right-0 mt-2 w-40 rounded-xl border bg-white shadow-lg overflow-hidden z-20">
+                  <%= link_to "Edit", edit_pot_path(pot),
+                        class: "block w-1/2 px-4 py-2 text-sm hover:bg-slate-50" %>
+
+                  <%= button_to "Delete", pot_path(pot), method: :delete,
+                        class: "w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50",
+                        data: { turbo_confirm: "Delete this pot?" } %>
+                </div>
+              </details>
+            </div>
+
+            <div class="mt-2 text-3xl font-semibold tracking-tight">
+              <%= number_to_currency(pot.saved) %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="mt-5">
+          <div class="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+            <div class="h-full rounded-full bg-slate-700" style="width: <%= pot.progress_percent %>%;"></div>
+          </div>
+
+          <div class="mt-2 flex items-center justify-between text-xs text-slate-500">
+            <span><%= pot.progress_percent %>%</span>
+            <span>Target of <%= number_to_currency(pot.target) %></span>
+          </div>
+        </div>
+
+        <!-- Buttons row (like screenshot) -->
+        <div class="mt-6 grid grid-cols-2 gap-3">
+          <!-- Add Money -->
+          <details class="group col-span-1">
+            <summary class="list-none">
+              <span class="inline-flex w-full items-center justify-center rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium hover:bg-slate-200 cursor-pointer">
+                + Add Money
+              </span>
+            </summary>
+
+            <div class="mt-3 rounded-xl border bg-white p-3">
+              <%= form_with url: add_money_pot_path(pot), method: :post, class: "flex gap-2" do %>
+                <%= number_field_tag :amount, nil,
+                      step: "0.01",
+                      min: 0,
+                      placeholder: "Amount",
+                      class: "w-full rounded-lg border px-3 py-2 text-sm" %>
+
+                <%= submit_tag "Add",
+                      class: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800" %>
+              <% end %>
+            </div>
+          </details>
+
+          <!-- Withdraw -->
+          <details class="group col-span-1">
+            <summary class="list-none">
+              <span class="inline-flex w-full items-center justify-center rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium hover:bg-slate-200 cursor-pointer">
+                Withdraw
+              </span>
+            </summary>
+
+            <div class="mt-3 rounded-xl border bg-white p-3">
+              <%= form_with url: withdraw_money_pot_path(pot), method: :post, class: "flex gap-2" do %>
+                <%= number_field_tag :amount, nil,
+                      step: "0.01",
+                      min: 0,
+                      placeholder: "Amount",
+                      class: "w-full rounded-lg border px-3 py-2 text-sm" %>
+
+                <%= submit_tag "Withdraw",
+                      class: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800" %>
+              <% end %>
+            </div>
+          </details>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+<% else %>
+  <div class="rounded-2xl border bg-white p-8">
+    <p class="text-gray-600">No pots yet. Create one to start saving toward goals.</p>
+  </div>
+<% end %>

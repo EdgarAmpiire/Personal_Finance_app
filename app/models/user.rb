@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :accounts, dependent: :destroy
   has_many :transactions, dependent: :destroy
   has_many :categories, dependent: :destroy
+  has_many :pots, dependent: :destroy
+  has_many :budgets, dependent: :destroy
 
   before_validation :normalize_email
 

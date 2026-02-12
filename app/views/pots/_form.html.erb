@@ -1,0 +1,32 @@
+<%= form_with model: pot, class: "space-y-5" do |f| %>
+  <div>
+    <%= f.label :name, class: "block text-sm font-medium mb-1" %>
+    <%= f.text_field :name, class: "w-full rounded-lg border px-3 py-2" %>
+    <% pot.errors.full_messages_for(:name).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :saved, "Saved (UGX)", class: "block text-sm font-medium mb-1" %>
+      <%= f.number_field :saved, step: "0.01", class: "w-full rounded-lg border px-3 py-2" %>
+      <% pot.errors.full_messages_for(:saved_cents).each do |msg| %>
+        <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :target, "Target (UGX)", class: "block text-sm font-medium mb-1" %>
+      <%= f.number_field :target, step: "0.01", class: "w-full rounded-lg border px-3 py-2" %>
+      <% pot.errors.full_messages_for(:target_cents).each do |msg| %>
+        <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-2">
+    <%= f.submit class: "w-full sm:w-auto rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800" %>
+    <%= link_to "Cancel", pots_path, class: "w-full sm:w-auto rounded-lg border px-4 py-2 text-sm text-center hover:bg-gray-50" %>
+  </div>
+<% end %>
