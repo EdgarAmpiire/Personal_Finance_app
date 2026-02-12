@@ -1,3 +1,5 @@
+<%# app/views/dashboard/show.html.erb %>
+
 <div class="mb-6">
   <h1 class="text-2xl sm:text-3xl font-semibold">Overview</h1>
 </div>
@@ -26,37 +28,64 @@
   </div>
 </div>
 
-<!-- Main grid -->
+<!-- Main grid (Cashflow removed) -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <!-- Cashflow -->
-  <div class="rounded-xl bg-white border p-5">
+
+  <!-- Pots card (col-span-2 on lg, list uses grid-cols-2) -->
+  <% pots = (defined?(@pots) && @pots.present?) ? @pots : current_user.pots.order(created_at: :desc) %>
+  <% preview_pots = pots.limit(4) %>
+  <% total_saved_cents = pots.sum(:saved_cents) %>
+  <% colors = %w[bg-emerald-700 bg-slate-700 bg-sky-400 bg-amber-300 bg-violet-500 bg-rose-500] %>
+
+  <div class="lg:col-span-2 rounded-xl bg-white border p-5">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Cashflow</h2>
+      <h2 class="text-lg font-semibold">Pots</h2>
+      <%= link_to "See Details →", pots_path,
+            class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
     </div>
 
-    <div class="h-56 sm:h-64">
-      <%= pie_chart @income_vs_expense, height: "260px" %>
-    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Left mini card -->
+      <div class="rounded-xl bg-[#F4EEE6] p-4 flex items-center gap-4">
+        
 
-    <p class="text-sm text-gray-600 mt-2">
-      Income vs Expenses for the current month.
-    </p>
+        <div class="min-w-0">
+          <div class="text-sm text-gray-600">Total Saved</div>
+          <div class="text-3xl font-semibold leading-tight">
+            <%= number_to_currency(total_saved_cents.to_i / 100.0) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right list -->
+      <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+        <% if preview_pots.any? %>
+          <% preview_pots.each_with_index do |pot, idx| %>
+            <div class="flex items-start gap-3 min-w-0">
+              <span class="mt-1 h-8 w-1.5 rounded-full <%= colors[idx % colors.length] %>"></span>
+
+              <div class="min-w-0">
+                <div class="text-sm font-medium text-slate-900 truncate">
+                  <%= pot.name %>
+                </div>
+                <div class="text-sm text-slate-600 whitespace-nowrap">
+                  <%= number_to_currency(pot.saved) %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="col-span-2 text-sm text-gray-600">No pots yet.</p>
+        <% end %>
+      </div>
+    </div>
   </div>
 
-  <!-- Budget placeholder -->
+  <!-- Budgets placeholder -->
   <div class="rounded-xl bg-white border p-5">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold">Budget</h2>
       <%= link_to "See Details →", budgets_path, class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
-    </div>
-    <p class="text-sm text-gray-600">Coming soon.</p>
-  </div>
-
-  <!-- Pots placeholder -->
-  <div class="rounded-xl bg-white border p-5">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Pots</h2>
-      <%= link_to "See Details →", pots_path, class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
     </div>
     <p class="text-sm text-gray-600">Coming soon.</p>
   </div>
@@ -107,4 +136,5 @@
     </div>
     <p class="text-sm text-gray-600">Coming soon.</p>
   </div>
+
 </div>
