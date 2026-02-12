@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_11_113634) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_12_072207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_113634) do
     t.datetime "updated_at", null: false
     t.integer "starting_balance_cents"
     t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
+
+  create_table "budgets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.integer "limit_cents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_budgets_on_category_id"
+    t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -66,6 +76,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_113634) do
   end
 
   add_foreign_key "accounts", "users"
+  add_foreign_key "budgets", "categories"
+  add_foreign_key "budgets", "users"
   add_foreign_key "categories", "users"
   add_foreign_key "pots", "users"
   add_foreign_key "transactions", "accounts"

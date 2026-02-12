@@ -6,69 +6,87 @@
 
 <!-- Top cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-  <div class="rounded-xl bg-slate-900 text-white p-5">
+  <div class="rounded-2xl bg-slate-900 text-white p-6 shadow-sm">
     <div class="text-sm text-slate-300">Current Balance</div>
-    <div class="text-2xl sm:text-3xl font-semibold mt-2 whitespace-nowrap">
+    <div class="text-3xl font-semibold mt-2 whitespace-no-wrap">
       <%= number_to_currency(@current_balance_cents.to_i / 100.0) %>
     </div>
   </div>
 
-  <div class="rounded-xl bg-white border p-5">
+  <div class="rounded-2xl bg-white border p-6 shadow-sm">
     <div class="text-sm text-gray-500">Income (this month)</div>
-    <div class="text-2xl sm:text-3xl font-semibold mt-2 whitespace-nowrap">
+    <div class="text-3xl font-semibold mt-2 whitespace-no-wrap">
       <%= number_to_currency(@month_income_cents.to_i / 100.0) %>
     </div>
   </div>
 
-  <div class="rounded-xl bg-white border p-5 sm:col-span-2 lg:col-span-1">
+  <div class="rounded-2xl bg-white border p-6 shadow-sm sm:col-span-2 lg:col-span-1">
     <div class="text-sm text-gray-500">Expenses (this month)</div>
-    <div class="text-2xl sm:text-3xl font-semibold mt-2 whitespace-nowrap">
+    <div class="text-3xl font-semibold mt-2 whitespace-no-wrap">
       <%= number_to_currency(@month_expense_cents.to_i / 100.0) %>
     </div>
   </div>
 </div>
 
-<!-- Main grid (Cashflow removed) -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<%# Data for Pots %>
+<% pots = (defined?(@pots) && @pots.present?) ? @pots : current_user.pots.order(created_at: :desc) %>
+<% preview_pots = pots.limit(4) %>
+<% total_saved_cents = pots.sum(:saved_cents) %>
+<% pot_colors = %w[bg-emerald-700 bg-slate-700 bg-sky-400 bg-amber-300 bg-violet-500 bg-rose-500] %>
 
-  <!-- Pots card (col-span-2 on lg, list uses grid-cols-2) -->
-  <% pots = (defined?(@pots) && @pots.present?) ? @pots : current_user.pots.order(created_at: :desc) %>
-  <% preview_pots = pots.limit(4) %>
-  <% total_saved_cents = pots.sum(:saved_cents) %>
-  <% colors = %w[bg-emerald-700 bg-slate-700 bg-sky-400 bg-amber-300 bg-violet-500 bg-rose-500] %>
+<%# Data for Budgets %>
+<% budgets = current_user.budgets.includes(:category).order(created_at: :desc) %>
 
-  <div class="lg:col-span-2 rounded-xl bg-white border p-5">
-    <div class="flex items-center justify-between mb-4">
+<% budget_palette = %w[
+  #277C78 #82C9D7 #F2CDAC #626070 #C94736 #7B61FF #FFD166 #06D6A0 #118AB2 #EF476F
+] %>
+
+<% epsilon = 0.01 %>
+<% donut_data = budgets.each_with_object({}) do |b, h|
+     name = b.category&.name || "Uncategorized"
+     spent_units = (@spend_by_category_cents || {})[name].to_i / 100.0
+     h[name] = spent_units.zero? ? epsilon : spent_units
+   end %>
+
+<% total_limit_cents = budgets.sum(:limit_cents) %>
+<% total_spent_cents_for_budgets =
+      budgets.sum { |b| (@spend_by_category_cents || {})[b.category&.name].to_i } %>
+<% total_spent_cents_for_budgets = [total_spent_cents_for_budgets, total_limit_cents].min %>
+
+<!-- Main grid -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-x-6 gap-y-3 items-start">
+
+  <!-- Pots (3/5) -->
+  <div class="lg:col-span-3 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
+    <div class="flex items-center justify-between mb-5">
       <h2 class="text-lg font-semibold">Pots</h2>
       <%= link_to "See Details →", pots_path,
-            class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <!-- Left mini card -->
-      <div class="rounded-xl bg-[#F4EEE6] p-4 flex items-center gap-4">
-        
-
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <!-- Total Saved mini tile -->
+      <div class="rounded-2xl bg-[#F4EEE6] p-5 flex items-center gap-4">
         <div class="min-w-0">
           <div class="text-sm text-gray-600">Total Saved</div>
-          <div class="text-3xl font-semibold leading-tight">
+          <div class="text-3xl font-semibold leading-tight whitespace-no-wrap">
             <%= number_to_currency(total_saved_cents.to_i / 100.0) %>
           </div>
         </div>
       </div>
 
-      <!-- Right list -->
-      <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+      <!-- Pots list -->
+      <div class="grid grid-cols-2 gap-x-6 gap-y-5">
         <% if preview_pots.any? %>
           <% preview_pots.each_with_index do |pot, idx| %>
             <div class="flex items-start gap-3 min-w-0">
-              <span class="mt-1 h-8 w-1.5 rounded-full <%= colors[idx % colors.length] %>"></span>
+              <span class="mt-1 h-9 w-1.5 rounded-full <%= pot_colors[idx % pot_colors.length] %>"></span>
 
               <div class="min-w-0">
                 <div class="text-sm font-medium text-slate-900 truncate">
                   <%= pot.name %>
                 </div>
-                <div class="text-sm text-slate-600 whitespace-nowrap">
+                <div class="text-sm text-slate-600 whitespace-no-wrap">
                   <%= number_to_currency(pot.saved) %>
                 </div>
               </div>
@@ -81,43 +99,90 @@
     </div>
   </div>
 
-  <!-- Budgets placeholder -->
-  <div class="rounded-xl bg-white border p-5">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Budget</h2>
-      <%= link_to "See Details →", budgets_path, class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
+  <!-- Budgets (2/5) -->
+  <div class="lg:col-span-2 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-semibold">Budgets</h2>
+      <%= link_to "See Details →", budgets_path,
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
     </div>
-    <p class="text-sm text-gray-600">Coming soon.</p>
+
+    <% if budgets.any? %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-18 items-start">
+        <!-- Donut -->
+<div class="flex justify-center sm:justify-start">
+  <!-- This box is the positioning reference -->
+  <div class="relative w-[210px] h-[210px]">
+    <%= pie_chart donut_data,
+          donut: true,
+          height: "210px",
+          width: "210px",
+          colors: budget_palette,
+          legend: false %>
+
+    <!-- Center label: centered to the 210x210 box -->
+    <div class="pointer-events-none absolute inset-0 grid place-items-center text-center">
+      <div>
+        <div class="text-xs font-semibold leading-none">
+          <%= number_to_currency(total_spent_cents_for_budgets.to_i / 100.0) %>
+        </div>
+        <div class="text-[11px] text-gray-500 mt-1">
+          of <%= number_to_currency(total_limit_cents.to_i / 100.0) %> limit
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <!-- Legend: name then amount below -->
+        <div class="space-y-4 min-w-0">
+          <% budgets.first(6).each_with_index do |b, idx| %>
+            <% name = b.category&.name || "Uncategorized" %>
+            <% limit_units = b.limit_cents.to_i / 100.0 %>
+
+            <div class="flex items-start gap-3 min-w-0">
+              <span class="mt-1 h-9 w-1.5 rounded-full shrink-0"
+                    style="background-color: <%= budget_palette[idx % budget_palette.length] %>;"></span>
+
+              <div class="flex flex-col min-w-0">
+                <div class="text-sm font-medium text-slate-900 truncate"><%= name %></div>
+                <div class="text-sm text-slate-600 whitespace-no-wrap"><%= number_to_currency(limit_units) %></div>
+              </div>
+            </div>
+          <% end %>
+
+          <% if budgets.size > 6 %>
+            <div class="text-xs text-gray-500">+ <%= budgets.size - 6 %> more…</div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-600">No budgets yet.</p>
+    <% end %>
   </div>
 
-  <!-- Transactions list -->
-  <div class="lg:col-span-2 rounded-xl bg-white border p-5">
-    <div class="flex items-start sm:items-center justify-between gap-3 mb-4">
+  <!-- Transactions (3/5) -->
+  <div class="lg:col-span-3 -mt-24 self-start rounded-2xl bg-white border p-6 shadow-sm">
+    <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold">Transactions</h2>
-      <%= link_to "View All →", transactions_path, class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
+      <%= link_to "View All →", transactions_path,
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
     </div>
 
     <% if @recent_transactions.any? %>
       <div class="divide-y">
         <% @recent_transactions.each do |t| %>
-          <div class="py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div class="py-4 flex items-center justify-between gap-4">
             <div class="min-w-0">
               <div class="font-medium truncate">
                 <%= link_to t.description, t, class: "hover:underline" %>
               </div>
-
-              <div class="text-sm text-gray-500 break-words">
-                <span class="whitespace-nowrap"><%= t.occurred_on %></span>
-                <span class="mx-1">•</span>
-                <span class="break-words"><%= t.account.name %></span>
-                <% if t.category %>
-                  <span class="mx-1">•</span>
-                  <span class="break-words"><%= t.category.name %></span>
-                <% end %>
+              <div class="text-sm text-gray-500 truncate">
+                <%= t.occurred_on %> • <%= t.account.name %><%= t.category ? " • #{t.category.name}" : "" %>
               </div>
             </div>
 
-            <div class="font-semibold whitespace-nowrap sm:text-right">
+            <div class="font-semibold whitespace-no-wrap">
               <%= number_to_currency(t.amount_cents / 100.0) %>
             </div>
           </div>
@@ -128,12 +193,14 @@
     <% end %>
   </div>
 
-  <!-- Recurring bills placeholder -->
-  <div class="rounded-xl bg-white border p-5">
+  <!-- Recurring Bills (2/5) -->
+  <div class="lg:col-span-2 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold">Recurring Bills</h2>
-      <%= link_to "See Details →", recurring_bills_path, class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
+      <%= link_to "See Details →", recurring_bills_path,
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
     </div>
+
     <p class="text-sm text-gray-600">Coming soon.</p>
   </div>
 

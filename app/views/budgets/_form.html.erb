@@ -1,0 +1,28 @@
+
+<%= form_with model: @budget, class: "space-y-6 w-full max-w-xl" do |f| %>
+
+  <div>
+    <%= f.label :category_id, "Category", class: "block text-sm font-medium mb-1" %>
+    <%= f.collection_select :category_id, current_user.categories.order(:name), :id, :name, { include_blank: "Select category" },
+          class: "w-full rounded border px-3 py-2 bg-white" %>
+    <% @budget.errors.full_messages_for(:category).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.label :limit, "Maximum / Limit", class: "block text-sm font-medium mb-1" %>
+    <%= f.text_field :limit, value: (@budget.limit_cents ? (@budget.limit_cents / 100.0) : nil),
+          class: "w-full rounded border px-3 py-2",
+          placeholder: "500000" %>
+    <% @budget.errors.full_messages_for(:limit_cents).each do |msg| %>
+      <p class="text-sm text-red-600 mt-1"><%= msg %></p>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-2">
+    <%= f.submit class: "w-full sm:w-auto rounded bg-slate-900 text-white px-4 py-2 cursor-pointer hover:bg-slate-800" %>
+    <%= link_to "Cancel", budgets_path, class: "w-full sm:w-auto rounded border px-4 py-2 text-center hover:bg-gray-50" %>
+  </div>
+
+<% end %>

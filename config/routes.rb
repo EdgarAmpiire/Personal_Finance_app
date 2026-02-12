@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   resources :accounts
   resources :transactions
   resources :categories, only: %i[ index new create ]
-  resources :budgets, only: [ :index ]
+  resources :budgets
   resources :pots do
     member do
       post :add_money

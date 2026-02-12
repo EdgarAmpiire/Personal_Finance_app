@@ -1,4 +1,158 @@
-<div>
-  <h1 class="text-2xl font-semibold">Budgets</h1>
-<p class="mt-2 text-gray-600">Coming soon.</p>
+<%# app/views/budgets/index.html.erb %>
+
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <h1 class="text-3xl font-semibold">Budgets</h1>
+
+  <%= link_to "+ Add New Budget", new_budget_path,
+        class: "inline-flex justify-center rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800" %>
+</div>
+<% palette = ["#0f766e", "#38bdf8", "#fbbf24", "#0f172a", "#8b5cf6", "#f43f5e", "#22c55e", "#fb7185"] %>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+  <!-- LEFT: Donut + Spending Summary -->
+  <div class="rounded-2xl border bg-white p-6 shadow-sm self-start">
+    <div class="relative flex items-center justify-center">
+      <div class="w-full max-w-sm">
+        <%# donut_chart comes with chartkick %>
+        <%= pie_chart @budget_donut,
+      height: "320px",
+      donut: true,
+      legend: false,
+      colors: palette.first(@budget_donut.size),
+      library: { plotOptions: { pie: { donut: { size: "72%" } } } } %>
+      </div>
+
+      <%# Center overlay label (matches screenshot feel) %>
+      <div class="pointer-events-none absolute text-center">
+        <div class="text-xl font-semibold leading-none">
+          <%= number_to_currency(@total_spent_cents.to_i / 100.0) %>
+        </div>
+        <div class="text-sm text-gray-500 mt-2">
+          of <%= number_to_currency(@total_limit_cents.to_i / 100.0) %> limit
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold mb-4">Spending Summary</h2>
+
+      <% if @budgets.any? %>
+        <div class="space-y-4">
+          <% colors = %w[bg-emerald-700 bg-sky-400 bg-amber-300 bg-slate-700 bg-violet-500 bg-rose-500] %>
+
+          <% @budgets.each_with_index do |b, idx| %>
+            <% spent_cents = @spent_by_category_cents[b.category_id].to_i %>
+            <% spent = spent_cents / 100.0 %>
+            <% limit = b.limit_cents.to_i / 100.0 %>
+
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="h-6 w-1.5 rounded-full" style="background-color:<%= palette[idx % palette.length] %>;"></span>
+                <div class="text-sm text-gray-700 truncate"><%= b.category.name %></div>
+              </div>
+
+              <div class="text-sm text-gray-700 whitespace-nowrap">
+                <span class="font-semibold"><%= number_to_currency(spent) %></span>
+                <span class="text-gray-500">of <%= number_to_currency(limit) %></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-gray-600">No budgets yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- RIGHT: Budget cards -->
+  <div class="space-y-6">
+    <% if @budgets.any? %>
+      <% @budgets.each do |b| %>
+        <% spent_cents = @spent_by_category_cents[b.category_id].to_i %>
+        <% spent = spent_cents / 100.0 %>
+        <% limit = b.limit_cents.to_i / 100.0 %>
+        <% remaining = [limit - spent, 0].max %>
+        <% ratio = limit <= 0 ? 0 : [spent / limit, 1].min %>
+        <% percent = (ratio * 100).round(1) %>
+
+        <div class="rounded-2xl border bg-white p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-3">
+                <% color = palette[@budgets.index(b) % palette.length] %>
+<span class="h-3 w-3 rounded-full" style="background-color:<%= color %>;"></span>
+<div class="text-lg font-semibold truncate"><%= b.category.name %></div>
+              </div>
+              <div class="text-sm text-gray-500 mt-2">
+                Maximum of <%= number_to_currency(limit) %>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <%= link_to "Edit", edit_budget_path(b),
+                    class: "rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" %>
+
+              <%= button_to "Delete", budget_path(b), method: :delete,
+                    class: "rounded-lg bg-red-600 text-white px-3 py-2 text-sm hover:bg-red-700",
+                    data: { turbo_confirm: "Delete this budget?" } %>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="mt-4">
+            <div class="h-3 w-full rounded-full bg-gray-100 overflow-hidden">
+             <div class="h-full" style="width:<%= percent %>%; background-color:<%= color %>;"></div>
+              </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div class="rounded-lg bg-gray-50 p-4">
+                <div class="text-xs text-gray-500 mb-1">Spent</div>
+                <div class="font-semibold"><%= number_to_currency(spent) %></div>
+              </div>
+
+              <div class="rounded-lg bg-gray-50 p-4">
+                <div class="text-xs text-gray-500 mb-1">Remaining</div>
+                <div class="font-semibold"><%= number_to_currency(remaining) %></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Latest Spending -->
+          <div class="mt-5 rounded-xl bg-[#F4EEE6] p-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-semibold">Latest Spending</div>
+              <%= link_to "See All →", transactions_path(category_id: b.category_id),
+                    class: "text-sm text-gray-600 hover:underline whitespace-nowrap" %>
+            </div>
+
+            <% latest = (@latest_by_category[b.category_id] || []).first(3) %>
+
+            <% if latest.any? %>
+              <div class="divide-y divide-black/5">
+                <% latest.each do |t| %>
+                  <div class="py-3 flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium truncate"><%= t.description %></div>
+                      <div class="text-xs text-gray-500"><%= t.occurred_on %></div>
+                    </div>
+
+                    <div class="text-sm font-semibold whitespace-nowrap">
+                      -<%= number_to_currency((t.amount_cents.abs) / 100.0) %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-sm text-gray-600">No spending yet this month.</p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="rounded-2xl border bg-white p-8">
+        <p class="text-gray-600">No budgets yet. Create one to track spending limits.</p>
+      </div>
+    <% end %>
+  </div>
+
 </div>
