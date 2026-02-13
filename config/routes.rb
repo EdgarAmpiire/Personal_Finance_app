@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get "recurring_bills/index"
+  get "recurring_bills/new"
+  get "recurring_bills/create"
+  get "recurring_bills/edit"
+  get "recurring_bills/update"
+  get "recurring_bills/destroy"
   root "sessions#new"
 
   get "/sign_up", to: "registrations#new"
@@ -20,7 +26,7 @@ Rails.application.routes.draw do
       post :withdraw_money
     end
   end
-  resources :recurring_bills, only: [ :index ]
+  resources :recurring_bills
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

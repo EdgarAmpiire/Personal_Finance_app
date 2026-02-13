@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :categories, dependent: :destroy
   has_many :pots, dependent: :destroy
   has_many :budgets, dependent: :destroy
+  has_many :recurring_bills, dependent: :destroy
 
   before_validation :normalize_email
 
