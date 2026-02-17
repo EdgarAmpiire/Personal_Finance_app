@@ -194,14 +194,47 @@
   </div>
 
   <!-- Recurring Bills (2/5) -->
-  <div class="lg:col-span-2 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Recurring Bills</h2>
-      <%= link_to "See Details →", recurring_bills_path,
-            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-nowrap" %>
+<div class="lg:col-span-2 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-lg font-semibold">Recurring Bills</h2>
+    <%= link_to "See Details →", recurring_bills_path,
+          class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-nowrap" %>
+  </div>
+
+  <div class="space-y-4">
+    <!-- Paid Bills -->
+    <div class="rounded-2xl bg-[#F4EEE6] p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="h-10 w-1.5 rounded-full bg-emerald-700"></span>
+        <div class="text-sm text-slate-700 truncate">Paid Bills</div>
+      </div>
+      <div class="text-sm font-semibold text-slate-900 whitespace-nowrap">
+        <%= number_to_currency(@rb_paid_cents.to_i / 100.0) %>
+      </div>
     </div>
 
-    <p class="text-sm text-gray-600">Coming soon.</p>
+    <!-- Total Upcoming -->
+    <div class="rounded-2xl bg-[#F4EEE6] p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="h-10 w-1.5 rounded-full bg-amber-300"></span>
+        <div class="text-sm text-slate-700 truncate">Total Upcoming</div>
+      </div>
+      <div class="text-sm font-semibold text-slate-900 whitespace-nowrap">
+        <%= number_to_currency(@rb_upcoming_cents.to_i / 100.0) %>
+      </div>
+    </div>
+
+    <!-- Due Soon -->
+    <div class="rounded-2xl bg-[#F4EEE6] p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="h-10 w-1.5 rounded-full bg-sky-400"></span>
+        <div class="text-sm text-slate-700 truncate">Due Soon</div>
+      </div>
+      <div class="text-sm font-semibold text-slate-900 whitespace-nowrap">
+        <%= number_to_currency(@rb_due_soon_cents.to_i / 100.0) %>
+      </div>
+    </div>
   </div>
+</div>
 
 </div>
