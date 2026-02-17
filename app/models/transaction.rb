@@ -26,4 +26,3 @@ class Transaction < ApplicationRecord
     errors.add(:category, "must belong to the current user") if category.user_id != user_id
   end
 end
- 
