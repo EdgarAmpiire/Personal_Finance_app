@@ -1,0 +1,41 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl sm:text-3xl font-semibold"><%= @bill.title %></h1>
+
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_recurring_bill_path(@bill),
+          class: "rounded-lg border px-4 py-2 text-sm hover:bg-gray-50" %>
+
+    <%= button_to "Delete", recurring_bill_path(@bill), method: :delete,
+          class: "rounded-lg bg-red-600 text-white px-4 py-2 text-sm hover:bg-red-700",
+          data: { turbo_confirm: "Delete this recurring bill?" } %>
+  </div>
+</div>
+
+<div class="max-w-2xl rounded-2xl border bg-white p-6 shadow-sm space-y-3">
+  <div class="flex items-center justify-between">
+    <div class="text-gray-600">Amount</div>
+    <div class="font-semibold"><%= number_to_currency(@bill.amount) %></div>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <div class="text-gray-600">Due</div>
+    <div class="font-semibold"><%= @bill.due_label %></div>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <div class="text-gray-600">Status</div>
+    <div class="font-semibold"><%= @bill.active? ? "Active" : "Inactive" %></div>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <div class="text-gray-600">Last paid on</div>
+    <div class="font-semibold"><%= @bill.last_paid_on || "-" %></div>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <div class="text-gray-600">Due soon?</div>
+    <div class="font-semibold <%= @bill.overdue? ? 'text-red-600' : 'text-emerald-700' %>">
+      <%= @bill.overdue? ? "Yes" : "No" %>
+    </div>
+  </div>
+</div>

@@ -8,21 +8,21 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
   <div class="rounded-2xl bg-slate-900 text-white p-6 shadow-sm">
     <div class="text-sm text-slate-300">Current Balance</div>
-    <div class="text-3xl font-semibold mt-2 whitespace-no-wrap">
+    <div class="text-3xl font-semibold mt-2 whitespace-nowrap">
       <%= number_to_currency(@current_balance_cents.to_i / 100.0) %>
     </div>
   </div>
 
   <div class="rounded-2xl bg-white border p-6 shadow-sm">
     <div class="text-sm text-gray-500">Income (this month)</div>
-    <div class="text-3xl font-semibold mt-2 whitespace-no-wrap">
+    <div class="text-3xl font-semibold mt-2 whitespace-nowrap">
       <%= number_to_currency(@month_income_cents.to_i / 100.0) %>
     </div>
   </div>
 
   <div class="rounded-2xl bg-white border p-6 shadow-sm sm:col-span-2 lg:col-span-1">
     <div class="text-sm text-gray-500">Expenses (this month)</div>
-    <div class="text-3xl font-semibold mt-2 whitespace-no-wrap">
+    <div class="text-3xl font-semibold mt-2 whitespace-nowrap">
       <%= number_to_currency(@month_expense_cents.to_i / 100.0) %>
     </div>
   </div>
@@ -54,14 +54,14 @@
 <% total_spent_cents_for_budgets = [total_spent_cents_for_budgets, total_limit_cents].min %>
 
 <!-- Main grid -->
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-x-6 gap-y-3 items-start">
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
   <!-- Pots (3/5) -->
   <div class="lg:col-span-3 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
     <div class="flex items-center justify-between mb-5">
       <h2 class="text-lg font-semibold">Pots</h2>
       <%= link_to "See Details →", pots_path,
-            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-nowrap" %>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -69,7 +69,7 @@
       <div class="rounded-2xl bg-[#F4EEE6] p-5 flex items-center gap-4">
         <div class="min-w-0">
           <div class="text-sm text-gray-600">Total Saved</div>
-          <div class="text-3xl font-semibold leading-tight whitespace-no-wrap">
+          <div class="text-3xl font-semibold leading-tight whitespace-nowrap">
             <%= number_to_currency(total_saved_cents.to_i / 100.0) %>
           </div>
         </div>
@@ -86,7 +86,7 @@
                 <div class="text-sm font-medium text-slate-900 truncate">
                   <%= pot.name %>
                 </div>
-                <div class="text-sm text-slate-600 whitespace-no-wrap">
+                <div class="text-sm text-slate-600 whitespace-nowrap">
                   <%= number_to_currency(pot.saved) %>
                 </div>
               </div>
@@ -104,7 +104,7 @@
     <div class="flex items-center justify-between mb-5">
       <h2 class="text-lg font-semibold">Budgets</h2>
       <%= link_to "See Details →", budgets_path,
-            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-nowrap" %>
     </div>
 
     <% if budgets.any? %>
@@ -146,7 +146,7 @@
 
               <div class="flex flex-col min-w-0">
                 <div class="text-sm font-medium text-slate-900 truncate"><%= name %></div>
-                <div class="text-sm text-slate-600 whitespace-no-wrap"><%= number_to_currency(limit_units) %></div>
+                <div class="text-sm text-slate-600 whitespace-nowrap"><%= number_to_currency(limit_units) %></div>
               </div>
             </div>
           <% end %>
@@ -162,11 +162,11 @@
   </div>
 
   <!-- Transactions (3/5) -->
-  <div class="lg:col-span-3 -mt-24 self-start rounded-2xl bg-white border p-6 shadow-sm">
+  <div class="lg:col-span-3 -mt-26 self-start rounded-2xl bg-white border p-6 shadow-sm">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-semibold">Transactions</h2>
       <%= link_to "View All →", transactions_path,
-            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
+            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-nowrap" %>
     </div>
 
     <% if @recent_transactions.any? %>
@@ -182,7 +182,7 @@
               </div>
             </div>
 
-            <div class="font-semibold whitespace-no-wrap">
+            <div class="font-semibold whitespace-nowrap">
               <%= number_to_currency(t.amount_cents / 100.0) %>
             </div>
           </div>
@@ -194,14 +194,47 @@
   </div>
 
   <!-- Recurring Bills (2/5) -->
-  <div class="lg:col-span-2 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Recurring Bills</h2>
-      <%= link_to "See Details →", recurring_bills_path,
-            class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-no-wrap" %>
+<div class="lg:col-span-2 self-start rounded-2xl bg-white border p-6 shadow-sm h-fit">
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-lg font-semibold">Recurring Bills</h2>
+    <%= link_to "See Details →", recurring_bills_path,
+          class: "text-sm text-gray-500 hover:text-slate-900 hover:underline whitespace-nowrap" %>
+  </div>
+
+  <div class="space-y-4">
+    <!-- Paid Bills -->
+    <div class="rounded-2xl bg-[#F4EEE6] p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="h-10 w-1.5 rounded-full bg-emerald-700"></span>
+        <div class="text-sm text-slate-700 truncate">Paid Bills</div>
+      </div>
+      <div class="text-sm font-semibold text-slate-900 whitespace-nowrap">
+        <%= number_to_currency(@rb_paid_cents.to_i / 100.0) %>
+      </div>
     </div>
 
-    <p class="text-sm text-gray-600">Coming soon.</p>
+    <!-- Total Upcoming -->
+    <div class="rounded-2xl bg-[#F4EEE6] p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="h-10 w-1.5 rounded-full bg-amber-300"></span>
+        <div class="text-sm text-slate-700 truncate">Total Upcoming</div>
+      </div>
+      <div class="text-sm font-semibold text-slate-900 whitespace-nowrap">
+        <%= number_to_currency(@rb_upcoming_cents.to_i / 100.0) %>
+      </div>
+    </div>
+
+    <!-- Due Soon -->
+    <div class="rounded-2xl bg-[#F4EEE6] p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="h-10 w-1.5 rounded-full bg-sky-400"></span>
+        <div class="text-sm text-slate-700 truncate">Due Soon</div>
+      </div>
+      <div class="text-sm font-semibold text-slate-900 whitespace-nowrap">
+        <%= number_to_currency(@rb_due_soon_cents.to_i / 100.0) %>
+      </div>
+    </div>
   </div>
+</div>
 
 </div>

@@ -2,14 +2,14 @@
 
 one:
   user: one
-  name: MyString
-  color: MyString
-  target_cents: 
-  saved_cents: 
+  name: "Emergency Fund"
+  color: "green"
+  target_cents: 100000
+  saved_cents: 25000
 
 two:
   user: two
-  name: MyString
-  color: MyString
-  target_cents: 
-  saved_cents: 
+  name: "New Laptop"
+  color: "blue"
+  target_cents: 300000
+  saved_cents: 0

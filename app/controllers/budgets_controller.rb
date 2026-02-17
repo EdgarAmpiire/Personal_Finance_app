@@ -27,8 +27,8 @@ class BudgetsController < ApplicationController
     @spent_by_category_cents[b.category_id].to_i
   end
 
-  @total_spent_cents = [@total_spent_cents, @total_limit_cents].min
-  @total_remaining_cents = [@total_limit_cents - @total_spent_cents, 0].max
+  @total_spent_cents = [ @total_spent_cents, @total_limit_cents ].min
+  @total_remaining_cents = [ @total_limit_cents - @total_spent_cents, 0 ].max
 
   # ✅ DONUT: one slice per budget category (shows ALL budgets)
   # Note: 0-spent budgets create 0-sized slices (invisible), so we add a tiny epsilon.
