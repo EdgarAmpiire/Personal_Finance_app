@@ -19,7 +19,7 @@ gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 # Use bcrypt for Authentication
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.22"
 # Chart gems
 gem "chartkick"
 gem "groupdate"
